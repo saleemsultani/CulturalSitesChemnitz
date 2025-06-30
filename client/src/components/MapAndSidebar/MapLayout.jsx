@@ -1,12 +1,9 @@
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-
-import CssBaseline from "@mui/material/CssBaseline";
-
-import MapComponent from "../MapComponent";
-import Header from "./Header";
+import MapComponent from "./MapComponent";
+import Header from "../Layout/Header";
 import SideBar from "./SideBar";
-import { useState } from "react";
+import Layout from "../Layout/Layout";
 
 const drawerWidth = 300;
 
@@ -34,32 +31,13 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   })
 );
 
-export default function PersistentDrawerLeft() {
-  // const theme = useTheme();
-  const [open, setOpen] = useState(true);
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-
+export default function MapLayout() {
   return (
     <Box sx={{ display: "flex" }}>
-      {/* App Bar */}
-
-      <Header open={open} handleDrawerOpen={handleDrawerOpen} />
-      {/* Drawer */}
-      <SideBar
-        open={open}
-        handleDrawerClose={handleDrawerClose}
-        handleDrawerOpen={handleDrawerOpen}
-      />
+      <Header />
+      <SideBar />
       <Main open={open}>
-        <MapComponent open={open} handleDrawerOpen={handleDrawerOpen} />
-        {/* <DrawerHeader /> */}
+        <MapComponent />
       </Main>
     </Box>
   );

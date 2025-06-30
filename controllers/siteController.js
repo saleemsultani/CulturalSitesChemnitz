@@ -36,17 +36,11 @@ export async function getAllRestaurants(req, res) {
       });
     });
 
-    console.log(cusines.length);
-    console.log(cusines);
-    // Object.entries(allRestaurants.metadata).map(([key, value]) => {
-    //   if (key === "cuisine") console.log(key);
-    // });
-
     res.status(200).json({
       success: true,
       message: "All Restaurants",
       numberOfRestaurants: allRestaurants.length,
-      restaurants: allRestaurants,
+      sites: allRestaurants,
     });
   } catch (error) {
     res.status(500).json({
@@ -69,7 +63,7 @@ export async function getAllTheatres(req, res) {
       success: true,
       message: "All Theatres",
       numberOfTheatres: allTheatres.length,
-      theatres: allTheatres,
+      sites: allTheatres,
     });
   } catch (error) {
     res.status(500).json({
@@ -104,7 +98,7 @@ export async function getAllArtworks(req, res) {
       success: true,
       message: "All Art works",
       numberOfArtworks: allArtworks.length,
-      artworks: allArtworks,
+      sites: allArtworks,
     });
   } catch (error) {
     res.status(500).json({
@@ -127,7 +121,7 @@ export async function getAllMuseums(req, res) {
       success: true,
       message: "All Museums",
       numberOfMuseums: allMuseums.length,
-      museums: allMuseums,
+      sites: allMuseums,
     });
   } catch (error) {
     res.status(500).json({
@@ -150,7 +144,7 @@ export async function getAllGalleries(req, res) {
       success: true,
       message: "All Galleries",
       numberOfGalleries: allGalleries.length,
-      galleries: allGalleries,
+      sites: allGalleries,
     });
   } catch (error) {
     res.status(500).json({
@@ -189,8 +183,8 @@ export async function searchSiteController(req, res) {
     res.status(200).json({
       success: true,
       message: "Search related sites",
-      numberOfSitesWithSearch: searchResult.length,
-      sitesWithSearch: searchResult,
+      numberOfSites: searchResult.length,
+      sites: searchResult,
     });
   } catch (error) {
     console.error(error);
@@ -213,21 +207,33 @@ export async function filterSiteController(req, res) {
 
     const query = {
       $and: [
-        {
-          $or: [{ amenity: category }, { tourism: category }],
-        },
-        ...(subCategory
+        ...(category
           ? [
               {
-                $or: [
-                  { "metadata.cuisine": subCategory },
-                  { "metadata.cuisine": { $regex: pattern } },
-                ],
+                $or: [{ amenity: category }, { tourism: category }],
               },
             ]
           : []),
       ],
     };
+
+    // const query = {
+    //   $and: [
+    //     {
+    //       $or: [{ amenity: category }, { tourism: category }],
+    //     },
+    //     ...(subCategory
+    //       ? [
+    //           {
+    //             $or: [
+    //               { "metadata.cuisine": subCategory },
+    //               { "metadata.cuisine": { $regex: pattern } },
+    //             ],
+    //           },
+    //         ]
+    //       : []),
+    //   ],
+    // };
 
     const allFilteredSites = await siteModel.find(query);
 
@@ -235,7 +241,7 @@ export async function filterSiteController(req, res) {
       success: true,
       message: "Filtered Sites",
       numberOfFilteredSites: allFilteredSites.length,
-      allFilteredSites,
+      sites: allFilteredSites,
     });
   } catch (error) {
     console.log("Error in filtering sites", error);

@@ -1,22 +1,44 @@
 import Box from "@mui/material/Box";
-import Layout from "./components/Layout";
-import MapComponent from "./MapComponent";
 import "./App.css";
-
-import PersistentDrawerLeft from "./components/PersistentDrawerLeft";
+import { Route, Routes } from "react-router-dom";
+import UserAuth from "./components/common/UserAuth";
+import Signup from "./components/pages/Signup";
+import Login from "./components/pages/Login";
+import PageNotFound from "./components/pages/PageNotFound";
+import Landing from "./components/pages/Landing";
+import RedirectIfLoggedIn from "./components/common/RedirectToIfLoggedIn.jsx";
+import MapLayout from "./components/MapAndSidebar/MapLayout.jsx";
 
 function App() {
   return (
-    <>
-      {/* <Layout> */}
-      {/* <MapComponent /> */}
-      {/* <ResponsiveDrawer /> */}
-      {/* <PersistentDrawer /> */}
-      <PersistentDrawerLeft />
-      {/* </Layout> */}
-      {/* <MapComponent /> */}
-    </>
+    <Box>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/home" element={<MapLayout />} />
+        <Route
+          path="/login"
+          element={
+            <RedirectIfLoggedIn>
+              <Login />
+            </RedirectIfLoggedIn>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <RedirectIfLoggedIn>
+              <Signup />
+            </RedirectIfLoggedIn>
+          }
+        />
+        <Route path="*" element={<PageNotFound />} />
+      </Routes>
+    </Box>
   );
 }
 
 export default App;
+
+{
+  /* <Route path="/user" element={<UserAuth />}></Route> */
+}

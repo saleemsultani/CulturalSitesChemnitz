@@ -170,6 +170,7 @@ export async function deleteReviewController(req, res) {
 export async function getSiteReviewsController(req, res) {
   try {
     const { id } = req.params;
+    console.log("id passed to : ", id);
     // check for the id
     if (!id) {
       return res.status(400).json({

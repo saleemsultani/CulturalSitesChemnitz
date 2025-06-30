@@ -21,4 +21,21 @@ router.post("/login", loginUser);
 // logout
 router.post("/logout", logout);
 
+// isLogin
+router.get("/is-login", isLogin, (req, res) => {
+  if (req.user) {
+    res.status(201).json({
+      success: true,
+      message: "User is logged in",
+      user: req.user,
+      token: req.token,
+    });
+  } else {
+    res.status(201).json({
+      success: false,
+      message: "User is not logged in",
+    });
+  }
+});
+
 export default router;

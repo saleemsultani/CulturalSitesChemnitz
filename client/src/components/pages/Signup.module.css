@@ -1,0 +1,24 @@
+.signUpFormContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  margin: 5% 15% 15% 15%;
+  padding: 5%;
+}
+
+.signUpForm {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 50%;
+  gap: 10px;
+  margin: 5%;
+}
+
+.loginButtonContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

@@ -35,29 +35,26 @@ export async function loginUser(req, res) {
       expiresIn: "7d",
     });
 
-    // Set cookie
     res.cookie("token", token, {
+      // sameSite: "Strict",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      httpOnly: true, // should be true for security
-      secure: process.env.NODE_ENV === "production", // secure in production
+      httpOnly: false,
+      secure: false,
       sameSite: "Lax",
     });
 
     // hide password from response
-    // user.password = undefined;
-    // user.photo = undefined;
-    const {
-      photo: ph,
-      password: pw,
-      deleted: del,
-      ...loggedInUser
-    } = user._doc;
+    user.password = undefined;
+    user.photo = undefined;
+    user.deleted = undefined;
+
+    console.log("inside login user: ", user);
 
     return res.status(200).json({
       success: true,
       message: "User logged in successfully",
       token,
-      user: loggedInUser,
+      user: user,
     });
   } catch (error) {
     console.error("Error in loginUser:", error);
@@ -111,7 +108,7 @@ export async function isLogin(req, res, next) {
     }
 
     const decoded = JWT.verify(token, process.env.JWT_SECRET);
-    const user = await userModel.findById(decoded._id);
+    const user = await userModel.findById(decoded._id).select("-photo");
 
     if (!user) {
       return res.status(400).json({
@@ -123,6 +120,8 @@ export async function isLogin(req, res, next) {
 
     // attach user to the request object and then next()
     req.user = user;
+    req.token = token;
+
     next();
   } catch (error) {
     console.log("error in isLogin!");

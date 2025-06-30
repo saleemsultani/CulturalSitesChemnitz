@@ -42,7 +42,7 @@ reviewSchema.statics.calcAverageRatings = async function (siteId) {
       },
     },
   ]);
-  console.log(stats);
+  // console.log(stats);
 
   if (stats.length > 0) {
     await siteModel.findByIdAndUpdate(siteId, {
@@ -63,12 +63,10 @@ reviewSchema.post("save", function () {
 
 reviewSchema.pre(/^findOneAnd/, async function (next) {
   this.r = await this.model.findOne(this.getQuery()); // 'r' is a custom property to access later
-  console.log("this is pre findOneAnd", this.r);
   next();
 });
 
 reviewSchema.post(/^findOneAnd/, async function () {
-  console.log("this is post findOneAnd", this.r);
   if (this.r) {
     await this.r.constructor.calcAverageRatings(this.r.site);
   }
