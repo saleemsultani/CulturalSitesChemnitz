@@ -22,6 +22,14 @@ export async function loginUser(req, res) {
       });
     }
 
+    // Check if user is soft deleted
+    if (user.deleted) {
+      return res.status(403).json({
+        success: false,
+        message: "Account has been deleted.Please Reactive your account.",
+      });
+    }
+
     const match = await comparePassword(password, user.password);
     if (!match) {
       return res.status(401).json({
@@ -35,6 +43,7 @@ export async function loginUser(req, res) {
       expiresIn: "7d",
     });
 
+    // send token as cookie
     res.cookie("token", token, {
       // sameSite: "Strict",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
@@ -47,8 +56,6 @@ export async function loginUser(req, res) {
     user.password = undefined;
     user.photo = undefined;
     user.deleted = undefined;
-
-    console.log("inside login user: ", user);
 
     return res.status(200).json({
       success: true,
@@ -69,7 +76,9 @@ export async function loginUser(req, res) {
 // logout
 export async function logout(req, res) {
   try {
+    console.log("this is inside logout controller");
     const token = req?.cookies?.token;
+    console.log("this is token inside logout", token);
 
     if (token) {
       res.clearCookie("token");
@@ -122,6 +131,7 @@ export async function isLogin(req, res, next) {
     req.user = user;
     req.token = token;
 
+    // req.user.password = undefined;
     next();
   } catch (error) {
     console.log("error in isLogin!");

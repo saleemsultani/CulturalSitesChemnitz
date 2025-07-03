@@ -4,6 +4,7 @@ import {
   deleteReviewController,
   getAllReviews,
   getSiteReviewsController,
+  getUserReviewsController,
   updateReviewController,
 } from "../controllers/reviewController.js";
 import { isLogin } from "../controllers/authController.js";
@@ -21,5 +22,8 @@ router.delete("/delete-review/:id", isLogin, deleteReviewController);
 
 // get all reviews of a specific site
 router.get("/get-site-reviews/:id", getSiteReviewsController);
+
+// get all reviews of a specific user
+router.get("/get-user-reviews", isLogin, getUserReviewsController);
 
 export default router;

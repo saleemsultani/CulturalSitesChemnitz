@@ -1,0 +1,30 @@
+.reviewBox {
+  flex: 1;
+  min-width: 300px;
+  height: 28rem;
+  width: 50%;
+  overflow: scroll;
+  scrollbar-width: none;
+}
+
+.reviewBox::-webkit-scrollbar {
+  display: none;
+}
+
+.paper {
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.link {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.link:hover {
+  cursor: pointer;
+}
+
+.textField {
+  margin: 1rem 0;
+}

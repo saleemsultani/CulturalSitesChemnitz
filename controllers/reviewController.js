@@ -32,7 +32,7 @@ export async function createReviewController(req, res) {
       error.keyPattern?.site &&
       error.keyPattern?.user
     ) {
-      return res.status(400).json({
+      return res.status(409).json({
         success: false,
         message: "You have already submitted a review for this site.",
       });
@@ -122,7 +122,9 @@ export async function updateReviewController(req, res) {
 // Delete Review
 export async function deleteReviewController(req, res) {
   try {
+    console.log("review route is being hit");
     const { id } = req.params;
+    console.log("this is review with id: ", id);
 
     // check for the id
     if (!id) {
@@ -179,7 +181,9 @@ export async function getSiteReviewsController(req, res) {
       });
     }
 
-    const reviews = await reviewModel.find({ site: id });
+    const reviews = await reviewModel
+      .find({ site: id })
+      .populate("user", "name");
 
     res.status(200).json({
       success: true,
@@ -189,6 +193,31 @@ export async function getSiteReviewsController(req, res) {
     });
   } catch (error) {
     console.log("Error in getting site reveiews");
+    res.status(500).json({
+      success: false,
+      message: error.message,
+      error,
+    });
+  }
+}
+
+// Get all reviews of a specific user
+export async function getUserReviewsController(req, res) {
+  try {
+    const userId = req.user._id;
+
+    const userReviews = await reviewModel
+      .find({ user: userId })
+      .populate("site"); // Optional: populate site name
+
+    res.status(200).json({
+      success: true,
+      message: "All reviews by user",
+      numberOfUserReviews: userReviews.length,
+      reviews: userReviews,
+    });
+  } catch (error) {
+    console.log("Error in getting user reviews");
     res.status(500).json({
       success: false,
       message: error.message,

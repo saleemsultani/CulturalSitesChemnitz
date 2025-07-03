@@ -8,36 +8,47 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../contexts/auth";
 import SearchSiteBox from "./SearchSiteBox";
+import { useNavigate } from "react-router-dom";
 
 function Header() {
   const [isMenuOpen, setIsMenueOpen] = useState(false);
   const { isLogin } = useAuth();
-
-  const handleProfileMenuOpen = () => {
-    setIsMenueOpen(true);
-  };
-
-  const handleProfileMenuClose = () => {
+  const navigate = useNavigate();
+  function handleClick(path) {
     setIsMenueOpen(false);
-  };
+    navigate(path);
+  }
 
   return (
     <AppBar>
-      <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Typography variant="h6" noWrap component="div">
+      <Toolbar
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          "&:hover": {
+            cursor: "pointer",
+          },
+        }}
+      >
+        <Typography
+          variant="h6"
+          noWrap
+          component="div"
+          onClick={() => {
+            navigate("/home");
+          }}
+        >
           Cultural Sites Chemnitz
         </Typography>
 
         {location.pathname === "/home" && <SearchSiteBox />}
 
-        {/* Right: Profile Icon */}
         <Box>
-          <IconButton onClick={handleProfileMenuOpen} color="inherit">
+          <IconButton onClick={() => setIsMenueOpen(true)} color="inherit">
             {isLogin?.user?.photo ? (
               <Avatar src={isLogin?.user.photo} />
             ) : (
@@ -51,15 +62,33 @@ function Header() {
         keepMounted
         transformOrigin={{ vertical: "top", horizontal: "right" }}
         open={isMenuOpen}
-        onClose={handleProfileMenuClose}
+        onClose={() => setIsMenueOpen(false)}
       >
         {isLogin?.user ? (
           <Box>
-            <MenuItem onClick={handleProfileMenuClose}>Dashboard</MenuItem>
-            <MenuItem onClick={handleProfileMenuClose}>Profile</MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleClick("/dashboard");
+              }}
+            >
+              Dashboard
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleClick("/profile");
+              }}
+            >
+              Profile
+            </MenuItem>
           </Box>
         ) : (
-          <MenuItem onClick={handleProfileMenuClose}>Login</MenuItem>
+          <MenuItem
+            onClick={() => {
+              handleClick("/login");
+            }}
+          >
+            Login
+          </MenuItem>
         )}
       </Menu>
     </AppBar>

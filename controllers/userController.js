@@ -1,4 +1,5 @@
 import userModel from "../modals/userModel.js";
+import JWT from "jsonwebtoken";
 import fs from "fs";
 import {
   comparePassword,
@@ -118,7 +119,7 @@ export async function reactivateUserController(req, res) {
 
     //   check whether the user exists
     if (!user) {
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
         message: "User doesn not exists",
         error: "No user found",
@@ -128,7 +129,7 @@ export async function reactivateUserController(req, res) {
     //   check whether the users password is correct
     const match = comparePassword(password, user.password);
     if (!match) {
-      return res.status(400).json({
+      return res.status(401).json({
         success: false,
         message: "Please enter Correct Credentials!",
         error: "Email or password is not correct",
@@ -137,7 +138,7 @@ export async function reactivateUserController(req, res) {
 
     //   check wheter the user is deleted or not
     if (!user.deleted) {
-      return res.status(400).json({
+      return res.status(409).json({
         success: false,
         message: "Account is already active, please Login.",
         error: "Activating an active account",
@@ -148,17 +149,16 @@ export async function reactivateUserController(req, res) {
     user.deleted = false;
 
     const activatedUser = await user.save();
-    const {
-      password: pw,
-      photo: ph,
-      deleted: del,
-      ...filteredActivatedUser
-    } = activatedUser._doc;
+    // const {
+    //   password: pw,
+    //   photo: ph,
+    //   deleted: del,
+    //   ...filteredActivatedUser
+    // } = activatedUser._doc;
 
     return res.status(200).json({
       success: true,
       message: "User activated Successfully",
-      user: filteredActivatedUser,
     });
   } catch (error) {
     console.log(error);
@@ -192,6 +192,60 @@ export async function deleteUserController(req, res) {
     res.status(500).json({
       success: false,
       message: "Error in Deleting user User!",
+      error,
+    });
+  }
+}
+
+// Change password controller
+
+export async function changePasswordController(req, res) {
+  try {
+    const userId = req.user._id;
+    console.log(userId);
+    const { newPassword } = req.body;
+
+    if (!newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "New password is required",
+      });
+    }
+
+    const hashed = await hashPassword(newPassword);
+
+    // await userModel.findByIdAndUpdate(userId, { password: hashed });
+    const result = await userModel.findByIdAndUpdate(
+      userId,
+      { password: hashed },
+      { new: true }
+    );
+    console.log("result from password change: ", result); // check if password is updated
+
+    // Create token
+    const token = JWT.sign({ _id: req.user._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    // send token as cookie
+    res.cookie("token", token, {
+      // sameSite: "Strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      httpOnly: false,
+      secure: false,
+      sameSite: "Lax",
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Password changed successfully",
+      token: token,
+    });
+  } catch (error) {
+    console.error("Error changing password:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error changing password",
       error,
     });
   }

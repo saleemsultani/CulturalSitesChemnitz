@@ -1,53 +1,45 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import styles from "./Login.module.css";
-import { useAuth } from "../contexts/auth";
 import Layout from "../Layout/Layout";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { setIsLogin } = useAuth();
   const navigate = useNavigate();
 
-  async function handleLogin() {
+  async function handleActivate() {
     try {
-      const res = await axios.post(
-        "http://localhost:8080/api/v1/user/login",
-        { email, password },
-        { withCredentials: true }
+      const res = await axios.put(
+        "http://localhost:8080/api/v1/user/reactive-user",
+        { email, password }
       );
 
       if (res.data.success) {
-        setIsLogin((curr) => ({
-          ...curr,
-          token: res.data.token,
-          user: res.data.user,
-        }));
-        // navigate to home page
-        navigate("/home");
+        alert("Account activated Successfully");
+        navigate("/login");
       }
     } catch (error) {
-      if (error.response && error.response.status === 403) {
+      if (error.response && error.response.status === 409) {
         const agree = window.confirm(
-          "Your account has been deleted. Do you want to reactivate it?"
+          "Your account is already active. Do you want to Login?"
         );
         if (agree) {
-          navigate("/reactive-user-account");
+          navigate("/login");
         }
       } else {
-        console.log("error in login method", error);
-        alert(error.response?.data?.message || "Login failed");
+        console.log("error in Activating", error);
+        alert(error.response?.data?.message || "Activating failed");
       }
     }
   }
 
   return (
-    <Layout title="User - Login">
+    <Layout title="Reactive User">
       <Box className={styles.loginFormContainer}>
-        <Typography variant="h3">Login</Typography>
+        <Typography variant="h3">Activate Account</Typography>
         <form className={styles.loginForm}>
           <TextField
             id="outlined-password-input"
@@ -67,11 +59,19 @@ const Login = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <Button onClick={handleLogin} variant="contained">
-            Login
+          <Button onClick={handleActivate} variant="contained">
+            activate
+          </Button>
+          <Button
+            onClick={() => {
+              navigate("/home");
+            }}
+            variant="outlined"
+          >
+            cancel
           </Button>
           <Box className={styles.registerButtonContainer}>
-            new here❓ 👉
+            create New Account❓ 👉
             <Button onClick={() => navigate("/signup")}>Register</Button>
           </Box>
         </form>

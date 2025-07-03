@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  changePasswordController,
   deleteUserController,
   reactivateUserController,
   registerController,
@@ -15,6 +16,9 @@ router.put("/reactive-user", reactivateUserController);
 // this is soft deletion, that's why put is used instead of delete
 router.put("/delete-user", isLogin, deleteUserController);
 
+// // Change Password Controller
+router.put("/change-password", isLogin, changePasswordController);
+
 // login
 router.post("/login", loginUser);
 
@@ -24,7 +28,11 @@ router.post("/logout", logout);
 // isLogin
 router.get("/is-login", isLogin, (req, res) => {
   if (req.user) {
-    res.status(201).json({
+    req.user.password = undefined;
+    req.user.photo = undefined;
+    req.user.deleted = undefined;
+
+    req.res.status(201).json({
       success: true,
       message: "User is logged in",
       user: req.user,

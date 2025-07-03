@@ -7,6 +7,7 @@ import connectDB from "./config/connectDB.js";
 import siteRoutes from "./routes/siteRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
+import favoriteRoutes from "./routes/favoriteRoutes.js";
 
 // Configure dotenv
 config();
@@ -29,7 +30,7 @@ app.use(express.json());
 app.use("/api/v1/sites", siteRoutes);
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/reviews", reviewRoutes);
-// app.use("/api/v1/favourites", categoryRoutes);
+app.use("/api/v1/favourites", favoriteRoutes);
 
 app.listen(8080, () => {
   console.log("Server is running on port 3000");

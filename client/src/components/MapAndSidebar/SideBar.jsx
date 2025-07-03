@@ -12,6 +12,9 @@ import { useSite } from "../contexts/SiteContext";
 import React from "react";
 import SiteInfo from "./SiteInfo";
 import { useAuth } from "../contexts/auth";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import axios from "axios";
 
 const drawerWidth = 300;
 
@@ -26,13 +29,49 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 function SideBar() {
   const theme = useTheme();
-  const { isSiteOpen, setIsSiteOpen } = useSite();
+  const { isSiteOpen, setIsSiteOpen, favoriteSites, currentSite } = useSite();
   const { isLogin } = useAuth();
 
   function handleCloseDrawer() {
     setIsSiteOpen(false);
     console.log(isLogin);
   }
+
+  // let isFavorited = true;
+  const isFavorited = favoriteSites?.some(
+    (fav) => fav?.site?._id === currentSite?._id
+  );
+
+  const handleFavoriteClick = () => {
+    async function addSiteToFavorite() {
+      try {
+        const res = await axios.post(
+          `http://localhost:8080/api/v1/favourites/add-to-favorite`,
+          {
+            siteId: currentSite?._id,
+          },
+          {
+            withCredentials: true,
+          }
+        );
+
+        if (res?.data?.success) {
+          console.log("Site Added to favorites");
+          alert("Site added to favorites");
+        }
+      } catch (error) {
+        console.log("Error in loading Reviewd sites: ", error);
+        alert("Error in adding site to favorite");
+      }
+    }
+    if (!isLogin?.user) {
+      alert("Your are not logged in!");
+      return;
+    } else {
+      addSiteToFavorite();
+    }
+  };
+
   return (
     <React.Fragment>
       {isSiteOpen && (
@@ -61,6 +100,20 @@ function SideBar() {
               <Typography>Site Details</Typography>
             </Box>
 
+            <IconButton
+              aria-label={
+                isFavorited ? "Remove from favorites" : "Add to favorites"
+              }
+              onClick={handleFavoriteClick}
+              size="large"
+            >
+              {isFavorited ? (
+                <FavoriteIcon color="error" />
+              ) : (
+                <FavoriteBorderIcon />
+              )}
+            </IconButton>
+
             {isSiteOpen && (
               <IconButton onClick={handleCloseDrawer}>
                 <ChevronLeftIcon />
@@ -70,16 +123,6 @@ function SideBar() {
           <Divider />
           {/* site info */}
           <SiteInfo />
-          {/* <Box>
-            <Typography component={"h6"}>Site information</Typography>
-            <Typography component={"p"}>
-              {`${currentSite?.metadata?.name || "This"} is ${
-                currentSite?.amenity ||
-                currentSite?.tourism ||
-                "an attractive site"
-              } in ${currentSite?.address?.city || "this location"}`}
-            </Typography>
-          </Box> */}
         </Drawer>
       )}
     </React.Fragment>

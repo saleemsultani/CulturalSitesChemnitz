@@ -156,12 +156,12 @@ const Signup = () => {
           <Box
             variant="contained"
             onClick={() => {
-              navigate("/login");
+              navigate("/reactive-user-account");
             }}
             className={styles.loginButtonContainer}
           >
-            already have an account❓ 👉
-            <Button>Login here</Button>
+            have deactive account❓ 👉
+            <Button>Activate here</Button>
           </Box>
         </form>
       </Box>

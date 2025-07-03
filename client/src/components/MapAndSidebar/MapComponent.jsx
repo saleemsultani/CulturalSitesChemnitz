@@ -1,17 +1,16 @@
 import { useState } from "react";
 const GoogleMapAPIKey = "AIzaSyA5da3XitVIhtsu6J9GG-bbib9L3VIwUnA";
-
 import { APIProvider, Map } from "@vis.gl/react-google-maps";
 import MarkerMaker from "./MarkerMaker";
 import Box from "@mui/material/Box";
-import { useTheme } from "@mui/material/styles";
 import FoodBankOutlinedIcon from "@mui/icons-material/FoodBankOutlined";
 import TheaterComedyOutlinedIcon from "@mui/icons-material/TheaterComedyOutlined";
 import ColorLensOutlinedIcon from "@mui/icons-material/ColorLensOutlined";
 import MuseumOutlinedIcon from "@mui/icons-material/MuseumOutlined";
 import ArtTrackOutlinedIcon from "@mui/icons-material/ArtTrackOutlined";
 import FilterButton from "./FilterButton.jsx";
-
+import { IconButton, Menu, MenuItem } from "@mui/material";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useSite } from "../contexts/SiteContext";
 
 const filters = [
@@ -41,7 +40,7 @@ const filters = [
 function MapComponent() {
   const { setFilteredCategory } = useSite();
   const [selectedFilter, setSelectedFilter] = useState(null);
-  const theme = useTheme();
+  const [anchorEl, setAnchorEl] = useState(null);
 
   return (
     <Box sx={{ width: "100%", height: "100%", position: "relative" }}>
@@ -57,14 +56,20 @@ function MapComponent() {
           <MarkerMaker />
         </Map>
       </APIProvider>
+
       <Box
         sx={{
           position: "absolute",
-          top: theme.mixins.toolbar.minHeight + 15,
+          top: (theme) => theme.mixins.toolbar.minHeight + 15,
           left: 10,
-          display: "flex",
+          right: 10,
+          display: {
+            xs: "none",
+            sm: "flex",
+          },
           gap: 1,
           overflowX: "auto",
+          maxWidth: "100%",
         }}
       >
         {filters.map((filter) => (
@@ -79,6 +84,47 @@ function MapComponent() {
             }}
           />
         ))}
+      </Box>
+
+      <Box
+        sx={{
+          position: "absolute",
+          top: (theme) => theme.mixins.toolbar.minHeight + 10,
+          left: 10,
+          display: {
+            xs: "block",
+            md: "none",
+          },
+        }}
+      >
+        <IconButton
+          onClick={(e) => setAnchorEl(e.currentTarget)}
+          sx={{
+            backgroundColor: "#f9f9f9",
+            boxShadow: 1,
+          }}
+        >
+          <MoreHorizIcon />
+        </IconButton>
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={() => setAnchorEl(null)}
+        >
+          {filters.map((filter) => (
+            <MenuItem
+              key={filter.label}
+              selected={selectedFilter === filter.label}
+              onClick={() => {
+                setSelectedFilter(filter.label);
+                setFilteredCategory(filter.label);
+                setAnchorEl(null);
+              }}
+            >
+              {filter.icon}&nbsp;{filter.label}
+            </MenuItem>
+          ))}
+        </Menu>
       </Box>
     </Box>
   );

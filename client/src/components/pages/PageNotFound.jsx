@@ -24,7 +24,7 @@ const PageNotFound = () => {
       <Button
         variant="contained"
         onClick={() => {
-          navigate("/");
+          navigate("/home");
         }}
       >
         Return

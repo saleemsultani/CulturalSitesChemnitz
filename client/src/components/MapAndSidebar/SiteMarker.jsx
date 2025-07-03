@@ -1,7 +1,6 @@
 import React from "react";
 import TheaterComedyIcon from "@mui/icons-material/TheaterComedy";
 import MuseumIcon from "@mui/icons-material/Museum";
-import ArtTrackIcon from "@mui/icons-material/ArtTrack";
 import ColorLensIcon from "@mui/icons-material/ColorLens";
 import FoodBankRoundedIcon from "@mui/icons-material/FoodBankRounded";
 import HomeWorkIcon from "@mui/icons-material/HomeWork";
@@ -23,15 +22,16 @@ function SiteMarker({ type }) {
     default:
       return null;
   }
-  //   return (
-  //     <>
-  //       <FilterButton icon={<FoodBankOutlinedIcon />} label={"Restaurants"} />
-  //       <FilterButton icon={<TheaterComedyOutlinedIcon />} label={"Theatres"} />
-  //       <FilterButton icon={<MuseumOutlinedIcon />} label={"Meuseums"} />
-  //       <FilterButton icon={<ArtTrackOutlinedIcon />} label={"Galleries"} />
-  //       <FilterButton icon={<ColorLensOutlinedIcon />} label={"Artworks"} />
-  //     </>
-  //   );
 }
 
 export default SiteMarker;
+
+//   return (
+//     <>
+//       <FilterButton icon={<FoodBankOutlinedIcon />} label={"Restaurants"} />
+//       <FilterButton icon={<TheaterComedyOutlinedIcon />} label={"Theatres"} />
+//       <FilterButton icon={<MuseumOutlinedIcon />} label={"Meuseums"} />
+//       <FilterButton icon={<ArtTrackOutlinedIcon />} label={"Galleries"} />
+//       <FilterButton icon={<ColorLensOutlinedIcon />} label={"Artworks"} />
+//     </>
+//   );

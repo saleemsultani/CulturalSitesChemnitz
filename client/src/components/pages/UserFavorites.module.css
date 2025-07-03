@@ -1,0 +1,33 @@
+.favBox {
+  flex: 1;
+  min-width: 300px;
+  height: 28rem;
+  width: 50%;
+  overflow: scroll;
+  scrollbar-width: none;
+}
+
+.favBox::-webkit-scrollbar {
+  display: none;
+}
+
+.paper {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.link {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.link:hover {
+  cursor: pointer;
+}
+
+.iconButton {
+  position: absolute;
+  top: 8;
+  right: 8;
+}
