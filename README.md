@@ -1,0 +1,5 @@
+to install all dependency of backend, in the root directory (i.e in culturalSitesChemnitz) run command (npm install) 
+then to run server run command  (npm run server)
+then move to clint directory (i.e /culturalSitesChemnitz/client) run command (npm install)
+and then run client by running command (npm run dev)
+then you can open the app in local host on port 5173 (i.e http://localhost:5173)
